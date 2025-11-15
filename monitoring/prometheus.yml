@@ -1,0 +1,72 @@
+# Prometheus Configuration for Enterprise Integration Hub
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Enterprise Integration Hub Dashboard
+  - job_name: 'integration-hub-dashboard'
+    static_configs:
+      - targets: ['dashboard:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # Shared Context Server
+  - job_name: 'shared-context-server'
+    static_configs:
+      - targets: ['shared-context-server:23456']
+    metrics_path: '/metrics'
+    scrape_interval: 15s
+
+  # n8n Workflow Engine
+  - job_name: 'n8n'
+    static_configs:
+      - targets: ['n8n:5678']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # PostgreSQL Database
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:5432']
+    scrape_interval: 30s
+
+  # Redis Cache
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis:6379']
+    scrape_interval: 30s
+
+  # Nginx API Gateway
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 30s
+
+  # Elasticsearch
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch:9200']
+    metrics_path: '/_prometheus/metrics'
+    scrape_interval: 30s
+
+# Alerting rules
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Rule files for alerts
+rule_files:
+  - "alert_rules.yml"
